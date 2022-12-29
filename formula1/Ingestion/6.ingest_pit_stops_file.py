@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC ### Ingest results.Json file
+# MAGIC ### Ingest pit_stops.Json file
 
 # COMMAND ----------
 
@@ -14,35 +14,26 @@ from pyspark.sql.types import StructType, StructField, IntegerType, StringType, 
 
 # COMMAND ----------
 
-results_schema = StructType(fields = [
-    StructField('resultId', IntegerType(), False),
+pit_stops_schema = StructType(fields = [
+    StructField('raceId', IntegerType(), False),
     StructField('driverId', IntegerType(), True),
-    StructField('constructorId', IntegerType(), True),
-    StructField('number', IntegerType(), True),
-    StructField('grid', IntegerType(), True),
-    StructField('position', IntegerType(), True),
-    StructField('positionText', StringType(), True),
-    StructField('positionOrder', IntegerType(), True),
-    StructField('points', FloatType(), True),
-    StructField('laps', IntegerType(), True),
+    StructField('stop', StringType(), True),
+    StructField('lap', IntegerType(), True),
     StructField('time', StringType(), True),
-    StructField('milliseconds', IntegerType(), True),
-    StructField('fastestLap', IntegerType(), True),
-    StructField('rank', IntegerType(), True),
-    StructField('fastestLapTime', StringType(), True),
-    StructField('fastestLapSpeed', FloatType(), True),
-    StructField('statusId', StringType(), True),
+    StructField('duration', StringType(), True),
+    StructField('milliseconds', IntegerType(), True)
 ])
 
 # COMMAND ----------
 
-results_df =  spark.read\
-.schema(results_schema)\
-.json('dbfs:/mnt/formula1dbp/raw/results.json')
+pit_stops_df =  spark.read\
+.schema(pit_stops_schema)\
+.option('multiLine', True)\
+.json('dbfs:/mnt/formula1dbp/raw/pit_stops.json')
 
 # COMMAND ----------
 
-display(results_df)
+display(pit_stops_df)
 
 # COMMAND ----------
 
@@ -51,11 +42,11 @@ display(results_df)
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timestamp
+#from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timestamp
 
 # COMMAND ----------
 
-results_droped_df = results_df.drop(col('statusId'))
+#results_droped_df = results_df.drop(col('statusId'))
 
 # COMMAND ----------
 
@@ -68,19 +59,13 @@ from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timest
 
 # COMMAND ----------
 
-result_final_df = results_droped_df.withColumn('ingestion_date', current_timestamp())\
-.withColumnRenamed('resultId', 'result_id')\
-.withColumnRenamed('driverId', 'driver_id')\
-.withColumnRenamed('constructorId', 'constructor_id')\
-.withColumnRenamed('positionText', 'position_text')\
-.withColumnRenamed('positionOrder', 'position_order')\
-.withColumnRenamed('fastestLap', 'fastest_lap')\
-.withColumnRenamed('fastestLapTime', 'fastest_lap_time')\
-.withColumnRenamed('fastestLapSpeed', 'fastest_lap_speed')
+pit_stops_final_df = pit_stops_df.withColumn('ingestion_date', current_timestamp())\
+.withColumnRenamed('raceId', 'race_id')\
+.withColumnRenamed('driverId', 'driver_id')
 
 # COMMAND ----------
 
-display(result_final_df)
+display(pit_stops_final_df)
 
 # COMMAND ----------
 
@@ -89,13 +74,13 @@ display(result_final_df)
 
 # COMMAND ----------
 
-result_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/results")
+pit_stops_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/pit_stops")
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/formula1dbp/processed/results
+# MAGIC ls /mnt/formula1dbp/processed/pit_stops
 
 # COMMAND ----------
 
-display(spark.read.parquet('/mnt/formula1dbp/processed/results'))
+display(spark.read.parquet('/mnt/formula1dbp/processed/pit_stops'))
