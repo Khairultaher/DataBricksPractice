@@ -4,12 +4,33 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('p_data_source', '')
+v_data_source = dbutils.widgets.get('p_data_source')
+
+# COMMAND ----------
+
+v_data_source
+
+# COMMAND ----------
+
 display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
 # MAGIC %fs
 # MAGIC ls /mnt/formula1dbp/raw
+
+# COMMAND ----------
+
+# MAGIC %run "../Includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../Includes/common_funtions"
+
+# COMMAND ----------
+
+row_folder_path
 
 # COMMAND ----------
 
@@ -35,7 +56,7 @@ circuits_schema = StructType(fields=[StructField("circuitId", IntegerType(), Fal
 circuits_df = spark.read\
 .option("header", True)\
 .schema(circuits_schema)\
-.csv('dbfs:/mnt/formula1dbp/raw/circuits.csv')
+.csv(f'dbfs:{row_folder_path}/circuits.csv')
 
 # COMMAND ----------
 
@@ -76,7 +97,8 @@ display(circuits_select_df)
 
 # COMMAND ----------
 
-circuits_rename_df = circuits_select_df.withColumnRenamed("race_contry", "country")
+circuits_rename_df = circuits_select_df.withColumnRenamed("race_contry", "country")\
+.withColumn('')
 
 # COMMAND ----------
 
@@ -93,7 +115,8 @@ from pyspark.sql.functions import current_timestamp
 
 # COMMAND ----------
 
-circuits_final_df = circuits_rename_df.withColumn("ingestion_date", current_timestamp())
+#circuits_final_df = circuits_rename_df.withColumn("ingestion_date", current_timestamp()) 
+circuits_final_df = add_ingestion_date(circuits_rename_df)
 
 # COMMAND ----------
 
@@ -106,7 +129,7 @@ display(circuits_final_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.mode("override").parquet("/mnt/formula1dbp/processed/circuits")
+circuits_final_df.write.mode("override").parquet(f"{processed_folder_path}/circuits")
 
 # COMMAND ----------
 
