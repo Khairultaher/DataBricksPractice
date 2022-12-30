@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC ### Ingest lap_times.Json file
+# MAGIC ### Ingest qualifying.Json file
 
 # COMMAND ----------
 
@@ -14,28 +14,32 @@ from pyspark.sql.types import StructType, StructField, IntegerType, StringType, 
 
 # COMMAND ----------
 
-lap_times_schema = StructType(fields = [
-    StructField('raceId', IntegerType(), False),
+qualifying_schema = StructType(fields = [
+    StructField('qualifyId', IntegerType(), False),
+    StructField('raceId', IntegerType(), True),
     StructField('driverId', IntegerType(), True),
-    StructField('lap', IntegerType(), True),
+    StructField('constructorId', IntegerType(), True),
+    StructField('number', IntegerType(), True),
     StructField('position', IntegerType(), True),
-    StructField('time', StringType(), True),
-    StructField('milliseconds', IntegerType(), True)
+    StructField('q1', StringType(), True),
+    StructField('q2', StringType(), True),
+    StructField('q3', StringType(), True)
 ])
 
 # COMMAND ----------
 
-lap_times_df =  spark.read\
-.schema(lap_times_schema)\
-.csv('dbfs:/mnt/formula1dbp/raw/lap_times/lap_times_split*.csv')
+qualifying_df =  spark.read\
+.schema(qualifying_schema)\
+.option('multiLine', True)\
+.json('dbfs:/mnt/formula1dbp/raw/qualifying/qualifying_split*.json')
 
 # COMMAND ----------
 
-display(lap_times_df)
+display(qualifying_df)
 
 # COMMAND ----------
 
-lap_times_df.count()
+qualifying_df.count()
 
 # COMMAND ----------
 
@@ -61,13 +65,15 @@ from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timest
 
 # COMMAND ----------
 
-lap_times_final_df = lap_times_df.withColumn('ingestion_date', current_timestamp())\
+qualifying_final_df = qualifying_df.withColumn('ingestion_date', current_timestamp())\
 .withColumnRenamed('raceId', 'race_id')\
-.withColumnRenamed('driverId', 'driver_id')
+.withColumnRenamed('driverId', 'driver_id')\
+.withColumnRenamed('constructorId', 'contsructor_id')\
+.withColumnRenamed('qualifyId', 'qualify_id')
 
 # COMMAND ----------
 
-display(lap_times_final_df)
+display(qualifying_final_df)
 
 # COMMAND ----------
 
@@ -76,13 +82,13 @@ display(lap_times_final_df)
 
 # COMMAND ----------
 
-lap_times_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/lap_times")
+qualifying_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/qualifying")
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/formula1dbp/processed/lap_timespit_stops
+# MAGIC ls /mnt/formula1dbp/processed/qualifying
 
 # COMMAND ----------
 
-display(spark.read.parquet('/mnt/formula1dbp/processed/lap_times'))
+display(spark.read.parquet('/mnt/formula1dbp/processed/qualifying'))
