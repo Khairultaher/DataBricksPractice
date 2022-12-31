@@ -74,7 +74,8 @@ display(pit_stops_final_df)
 
 # COMMAND ----------
 
-pit_stops_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/pit_stops")
+#pit_stops_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/pit_stops")
+pit_stops_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.pit_stops")
 
 # COMMAND ----------
 

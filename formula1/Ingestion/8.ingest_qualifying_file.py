@@ -82,7 +82,8 @@ display(qualifying_final_df)
 
 # COMMAND ----------
 
-qualifying_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/qualifying")
+#qualifying_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/qualifying")
+qualifying_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.qualifying")
 
 # COMMAND ----------
 

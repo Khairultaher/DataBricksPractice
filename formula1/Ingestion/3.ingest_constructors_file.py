@@ -65,7 +65,8 @@ display(constructors_final_df)
 
 # COMMAND ----------
 
-constructors_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/constructors")
+#constructors_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/constructors")
+constructors_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.constructors")
 
 # COMMAND ----------
 

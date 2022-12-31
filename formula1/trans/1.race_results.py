@@ -56,7 +56,7 @@ from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timest
 # COMMAND ----------
 
 final_df = race_result_df\
-.select("race_year","race_name","race_date","circuit_location","driver_name","driver_number","driver_nationality","team","grid","fastest_lap","race_time", "points")\
+.select("race_year","race_name","race_date","circuit_location","driver_name","driver_number","driver_nationality","team","grid","fastest_lap","race_time", "points", "position")\
 .withColumn("crated_date", current_timestamp())
 
 # COMMAND ----------
@@ -65,7 +65,8 @@ display(final_df.filter("race_year == 2020 and race_name == 'Abu Dhabi Grand Pri
 
 # COMMAND ----------
 
-final_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/race_results")
+#final_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/race_results")
+final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_presentation.race_results")
 
 # COMMAND ----------
 

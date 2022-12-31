@@ -74,7 +74,8 @@ display(races_selected_df)
 
 # COMMAND ----------
 
-races_selected_df.write.mode("overwrite").partitionBy('race_year').parquet("/mnt/formula1dbp/processed/races")
+#races_selected_df.write.mode("overwrite").partitionBy('race_year').parquet("/mnt/formula1dbp/processed/races")
+races_selected_df.write.mode("overwrite").partitionBy('race_year').format("parquet").saveAsTable("f1_processed.races")
 
 # COMMAND ----------
 

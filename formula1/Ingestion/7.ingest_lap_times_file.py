@@ -76,12 +76,13 @@ display(lap_times_final_df)
 
 # COMMAND ----------
 
-lap_times_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/lap_times")
+#lap_times_final_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/lap_times")
+lap_times_final_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.lap_times")
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/formula1dbp/processed/lap_timespit_stops
+# MAGIC ls /mnt/formula1dbp/processed/lap_times
 
 # COMMAND ----------
 

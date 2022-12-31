@@ -82,7 +82,8 @@ display(driveders_with_columns_df)
 
 # COMMAND ----------
 
-driveders_with_columns_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/drivers")
+#driveders_with_columns_df.write.mode("overwrite").parquet("/mnt/formula1dbp/processed/drivers")
+driveders_with_columns_df.write.mode("overwrite").format("parquet").saveAsTable("f1_processed.drivers")
 
 # COMMAND ----------
 
