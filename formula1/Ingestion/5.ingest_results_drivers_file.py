@@ -17,6 +17,7 @@ from pyspark.sql.types import StructType, StructField, IntegerType, StringType, 
 results_schema = StructType(fields = [
     StructField('resultId', IntegerType(), False),
     StructField('driverId', IntegerType(), True),
+    StructField('raceId', IntegerType(), True),
     StructField('constructorId', IntegerType(), True),
     StructField('number', IntegerType(), True),
     StructField('grid', IntegerType(), True),
@@ -70,6 +71,7 @@ from pyspark.sql.functions import col, lit, concat, current_timestamp, to_timest
 
 result_final_df = results_droped_df.withColumn('ingestion_date', current_timestamp())\
 .withColumnRenamed('resultId', 'result_id')\
+.withColumnRenamed('raceId', 'race_id')\
 .withColumnRenamed('driverId', 'driver_id')\
 .withColumnRenamed('constructorId', 'constructor_id')\
 .withColumnRenamed('positionText', 'position_text')\

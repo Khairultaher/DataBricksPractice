@@ -71,4 +71,8 @@ dbutils.fs.unmount('/mnt/processed')
 
 # COMMAND ----------
 
+mount_adls("presentation")
 
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/formula1dbp/presentation")
