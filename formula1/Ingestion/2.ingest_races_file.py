@@ -61,7 +61,7 @@ display(races_with_timestamp_df)
 # COMMAND ----------
 
 races_selected_df = races_with_timestamp_df\
-.select(col("raceId").alias('race_id'), col("year").alias('race_year'), col("round"), col('circuitId').alias('circuit_id'), col("name").alias("date"), col("time"), col("ingestion_date"), col("race_timestamp"))
+.select(col("raceId").alias('race_id'), col("year").alias('race_year'), col("round"), col('circuitId').alias('circuit_id'), col("name").alias("name"), col("time"), col("ingestion_date"), col("race_timestamp"))
 
 # COMMAND ----------
 

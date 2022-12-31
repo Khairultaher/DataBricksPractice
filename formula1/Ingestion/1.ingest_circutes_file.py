@@ -77,7 +77,7 @@ display(circuits_df.describe())
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, lit
 
 # COMMAND ----------
 
@@ -98,7 +98,9 @@ display(circuits_select_df)
 # COMMAND ----------
 
 circuits_rename_df = circuits_select_df.withColumnRenamed("race_contry", "country")\
-.withColumn('')
+.withColumnRenamed('circuitId', 'circuit_id')\
+.withColumnRenamed('circuitRef', 'circuit_ref')\
+.withColumn('data_source', lit(v_data_source))
 
 # COMMAND ----------
 
@@ -129,7 +131,7 @@ display(circuits_final_df)
 
 # COMMAND ----------
 
-circuits_final_df.write.mode("override").parquet(f"{processed_folder_path}/circuits")
+circuits_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circuits")
 
 # COMMAND ----------
 
@@ -138,4 +140,8 @@ circuits_final_df.write.mode("override").parquet(f"{processed_folder_path}/circu
 
 # COMMAND ----------
 
+display(spark.read.parquet('/mnt/formula1dbp/processed/circuits'))
 
+# COMMAND ----------
+
+dbutils.notebook.exit('success')
