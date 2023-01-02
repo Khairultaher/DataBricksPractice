@@ -18,3 +18,7 @@ JOIN drivers ON drivers.driver_id = results.driver_id
 JOIN constructors ON constructors.constructor_id = results.constructor_id
 JOIN races ON races.race_id = results.race_id
 WHERE results.position <= 10
+
+-- COMMAND ----------
+
+SELECT * FROM f1_presentation.calculated_race_resluts
