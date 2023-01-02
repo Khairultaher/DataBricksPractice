@@ -4,6 +4,24 @@
 
 # COMMAND ----------
 
+dbutils.widgets.text('p_data_source', 'testing')
+v_data_source = dbutils.widgets.get('p_data_source')
+
+# COMMAND ----------
+
+dbutils.widgets.text('p_file_date', '2021-03-21')
+v_file_date = dbutils.widgets.get('p_file_date')
+
+# COMMAND ----------
+
+# MAGIC %run "../Includes/configuration"
+
+# COMMAND ----------
+
+# MAGIC %run "../Includes/common_funtions"
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC #### Step 1: Read Json file using the spark dataframe reader.API
 
@@ -36,7 +54,7 @@ drivers_schema = StructType(fields = [
 
 drivers_df =  spark.read\
 .schema(drivers_schema)\
-.json('dbfs:/mnt/formula1dbp/raw/drivers.json')
+.json(f'dbfs:{row_folder_path}/{v_file_date}/drivers.json')
 
 # COMMAND ----------
 
@@ -69,7 +87,9 @@ display(drivers_droped_df)
 driveders_with_columns_df = drivers_droped_df.withColumn('name', concat(col('name.forename'), lit(' '), col('name.surname')))\
                                                .withColumn('ingestion_date', current_timestamp())\
                                                .withColumnRenamed('driverId', 'driver_id')\
-                                               .withColumnRenamed('driverRef', 'driver_ref')
+                                               .withColumnRenamed('driverRef', 'driver_ref')\
+.withColumn('data_source', lit(v_data_source))\
+.withColumn('file_date', lit(v_file_date))
 
 # COMMAND ----------
 
@@ -92,4 +112,13 @@ driveders_with_columns_df.write.mode("overwrite").format("parquet").saveAsTable(
 
 # COMMAND ----------
 
-display(spark.read.parquet('/mnt/formula1dbp/processed/drivers'))
+#display(spark.read.parquet('/mnt/formula1dbp/processed/drivers'))
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC SELECT * FROM f1_processed.drivers
+
+# COMMAND ----------
+
+dbutils.notebook.exit('success')

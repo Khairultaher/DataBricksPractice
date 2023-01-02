@@ -4,12 +4,21 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text('p_data_source', '')
+dbutils.widgets.text('p_data_source', 'testing')
 v_data_source = dbutils.widgets.get('p_data_source')
 
 # COMMAND ----------
 
+dbutils.widgets.text('p_file_date', '2021-03-21')
+v_file_date = dbutils.widgets.get('p_file_date')
+
+# COMMAND ----------
+
 v_data_source
+
+# COMMAND ----------
+
+v_file_date
 
 # COMMAND ----------
 
@@ -56,7 +65,7 @@ circuits_schema = StructType(fields=[StructField("circuitId", IntegerType(), Fal
 circuits_df = spark.read\
 .option("header", True)\
 .schema(circuits_schema)\
-.csv(f'dbfs:{row_folder_path}/circuits.csv')
+.csv(f'dbfs:{row_folder_path}/{v_file_date}/circuits.csv')
 
 # COMMAND ----------
 
@@ -100,7 +109,8 @@ display(circuits_select_df)
 circuits_rename_df = circuits_select_df.withColumnRenamed("race_contry", "country")\
 .withColumnRenamed('circuitId', 'circuit_id')\
 .withColumnRenamed('circuitRef', 'circuit_ref')\
-.withColumn('data_source', lit(v_data_source))
+.withColumn('data_source', lit(v_data_source))\
+.withColumn('file_date', lit(v_file_date))
 
 # COMMAND ----------
 
