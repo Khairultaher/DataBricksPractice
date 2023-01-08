@@ -47,11 +47,11 @@ def mount_adls(container_name):
 
 # COMMAND ----------
 
-mount_adls("processed")
+mount_adls("raw")
 
 # COMMAND ----------
 
-mount_adls("raw")
+#dbutils.fs.unmount('/mnt/raw')
 
 # COMMAND ----------
 
@@ -63,11 +63,11 @@ dbutils.secrets.list('formula1dbp-scope')
 
 # COMMAND ----------
 
-dbutils.fs.unmount('/mnt/raw')
+mount_adls("processed")
 
 # COMMAND ----------
 
-dbutils.fs.unmount('/mnt/processed')
+#dbutils.fs.unmount('/mnt/processed')
 
 # COMMAND ----------
 
@@ -76,3 +76,23 @@ mount_adls("presentation")
 # COMMAND ----------
 
 dbutils.fs.ls("/mnt/formula1dbp/presentation")
+
+# COMMAND ----------
+
+#dbutils.fs.unmount('/mnt/presentation')
+
+# COMMAND ----------
+
+mount_adls("demo")
+
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/formula1dbp/demo")
+
+# COMMAND ----------
+
+dbutils.fs.ls("/mnt/formula1dbp/demo")
+
+# COMMAND ----------
+
+#dbutils.fs.unmount('/mnt/demo')

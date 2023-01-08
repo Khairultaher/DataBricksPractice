@@ -12,7 +12,8 @@ v_file_date = dbutils.widgets.get('p_file_date')
 
 # COMMAND ----------
 
-drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers")\
+# drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers")\
+drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")\
 .withColumnRenamed("name", "driver_name")\
 .withColumnRenamed("number", "driver_number")\
 .withColumnRenamed("nationality", "driver_nationality")
